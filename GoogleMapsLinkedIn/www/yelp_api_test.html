@@ -50,7 +50,12 @@
 
     var map = null;
     var icon = null;
+    var marker = null;
     var firstLoad = true;
+    var numRestaurants = 0;
+    var geocoder = null;
+    var points = [];
+    var businesses = [];
     var userLatLng = new GLatLng(37.7458, -122.4416);
 
     /*
@@ -59,11 +64,11 @@
      */
     function load() {
         map = new GMap2(document.getElementById("map"));
+        geocoder = new GClientGeocoder();
         GEvent.addListener(map, "load", function() {updateMap();});
-        var zoomAmt = 13;
+        var zoomAmt = 11;   //13
         var mapCenter = new GLatLng(37.7458, -122.4416);
         map.setCenter(mapCenter, zoomAmt);
-        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                 
         if (window.attachEvent) window.attachEvent("onresize", function() { map.checkResize()} );
         else if (window.addEventListener) window.addEventListener("resize", function() { map.checkResize()}, false);
@@ -76,7 +81,8 @@
         icon.iconAnchor = new GPoint(15, 29);
         icon.infoWindowAnchor = new GPoint(15, 3);
     }
-
+        
+    
     /*
      * Construct the URL to call for the API request
      */
@@ -87,7 +93,9 @@
             "business_review_search?"+
             "callback=" + "handleResults" +
             "&term=" + document.getElementById("term").value + 
-            "&num_biz_requested=10" +
+            //Use a sort value of 1 to sort restaurants by nearest distance (http://www.yelp.com/developers/documentation/v2/search_api)
+            "&sort=2" +
+            "&num_biz_requested=20" +
             "&tl_lat=" + mapBounds.getSouthWest().lat() +
             "&tl_long=" + mapBounds.getSouthWest().lng() + 
             "&br_lat=" + mapBounds.getNorthEast().lat() + 
@@ -121,6 +129,18 @@
      * If a sucessful API response is received, place
      * markers on the map.  If not, display an error.
      */
+        
+    function findLatLng(biz, address){
+        geocoder.getLatLng(address, function (point) {
+            if (!point) {
+                //do nothing
+            } else {
+                alert(point);
+                createMarker(biz, point);
+            }
+        });
+    }
+        
     function handleResults(data) {
         if(data.message.text == "OK") {
             if (data.businesses.length == 0) {
@@ -129,15 +149,15 @@
             }
             
             //instead of data.businesses.length, use 5
-            for(var i=0; i < 5; i++) {
+            for(var i = 0; i < 5; i++) {
                 biz = data.businesses[i];
-                var neg = Math.floor((Math.random()) + 1);
-                if(neg == 0) 
-                    neg = -1;
-                var restaurantLat = userLatLng.lat() + (Math.random() * 0.04) * neg;
-                var restaurantLong = userLatLng.lng() + (Math.random() * 0.05) * neg;
-                createMarker(biz, new GLatLng(restaurantLat, restaurantLong), i);
+                businesses.push(biz);
+                
+                alert(biz.address1);
+                
+                findLatLng(biz, biz.address1);
             }
+
         }
         else {
             alert("Error: " + data.message.text);
@@ -217,7 +237,7 @@
     /*
      * Creates a marker for the given business and point
      */
-    function createMarker(biz, point, markerNum) {
+    function createMarker(biz, point) {
         var infoWindowHtml = generateInfoWindowHtml(biz)
         var marker = new GMarker(point, icon);
         map.addOverlay(marker);
