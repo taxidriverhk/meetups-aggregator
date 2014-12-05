@@ -112,7 +112,7 @@ var suc = function(p) {
         new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan", p),
         new LinkedInUser1("https://www.linkedin.com/in/zacharyli323", p)
     ];
-    console.log(users);
+    //console.log(users);
 
     //Creates a new google maps marker object for using with the pins
     while (i < users.length) {
@@ -128,6 +128,7 @@ var suc = function(p) {
         IN.API.Profile("url=" + users[i].linkedInUrl)
             .fields(["firstName", "lastName", "headline", "location", "industry", "picture-url", "public-profile-url"])
             .result(function (result) {
+                console.log("result is");
                 console.log(result);
                 // Summary box for each searched user
                 var linkedinUserDivString = result.values[0]["firstName"] + ' ' + result.values[0]["lastName"] + '<br />'
@@ -144,8 +145,8 @@ var suc = function(p) {
 
                 linkedInResultStrings.push(linkedinUserDivString);
                 linkedInResultImgStrings.push(linkedinUserImgDivString);
-                console.log(linkedInResultStrings);
-                console.log(linkedInResultImgStrings);
+                //console.log(linkedInResultStrings);
+                //console.log(linkedInResultImgStrings);
             })
             .error(function (error) {
                 console.log(error);

@@ -135,7 +135,7 @@
             if (!point) {
                 //do nothing
             } else {
-                alert(point);
+                //alert(point);
                 createMarker(biz, point);
             }
         });
@@ -153,7 +153,7 @@
                 biz = data.businesses[i];
                 businesses.push(biz);
                 
-                alert(biz.address1);
+                //alert(biz.address1);
                 
                 findLatLng(biz, biz.address1);
             }
@@ -173,7 +173,7 @@
 
         // image and rating
         text += '<img class="businessimage" src="'+biz.photo_url+'"/>';
-
+        
         // div start
         text += '<div class="businessinfo">';
         // name/url
@@ -194,7 +194,8 @@
         // phone number
         if(biz.phone.length)
             text += formatPhoneNumber(biz.phone);
-
+        // Chat link
+        text += '<br/><a href="chat.html" class="chatlink" target="_blank">CHAT!</a><br/>';
         // div end
         text += '</div></div>'
         return text;
