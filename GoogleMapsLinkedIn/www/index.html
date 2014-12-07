@@ -1,121 +1,348 @@
-<!--
-Copyright (c) 2011, 2012, 2013 Intel Corporation
-
- Permission is hereby granted, free of charge, to any person
- obtaining a copy of this software and associated documentation
- files (the "Software"), to deal in the Software without
- restriction, including without limitation the rights to use,
- copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the
- Software is furnished to do so, subject to the following
- conditions:
-
- The above copyright notice and this permission notice shall be
- included in all copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- OTHER DEALINGS IN THE SOFTWARE.
--->
-
-
+<!DOCTYPE html>
 <html>
 <head>
-
-<title>Home Page</title>
-<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">    
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-<script src='intelxdk.js'></script>
-<script src='cordova.js'></script> 
-<script src='xhr.js'></script>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.5b1.js"></script>
-<script type="text/javascript" src="js/main.js"></script> 
-
-<style type="text/css">
-* { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); -ms-touch-action:none;}
+    <title>Login template</title>
+<!--
+    This template can be used for creating apps that require user login and user registration before starting actual app.
+--> 
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0;" />
     
+    <link rel="stylesheet" type="text/css" href="appframework/af.ui.css" />
+    <link rel="stylesheet" type="text/css" href="appframework/icons.css" />
+    <script type="text/javascript" charset="utf-8" src="appframework/appframework.ui.min.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.5b1.js"></script>
+    <script type="text/javascript" src="http://platform.linkedin.com/in.js">
+            api_key: 75hjzncfoiujqs
+            authorize: true
+    </script>
+    <script type="text/javascript" src="js/linkedin_map.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.1.min.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+	<script src="js/libs/quickblox.js"></script>
+	<script src="js/libs/quickblox.chat.js"></script>
+	<script src="js/libs/jquery.timeago.js"></script>
+	<script src="js/libs/jquery.scrollTo-min.js"></script>
+	
+	<script src="js/config.js"></script>
+	<script src="js/helpers.js"></script>
+	
+	<script src="js/chat.js"></script>
+    <script type="text/javascript">
+        Parse.initialize(
+                "8kgtDniBqpMIqR431enDHnkKQO1joSenElOwTjsG",
+                "iYwv5mh6xC2ihhylRgMBc44ZSEXKJEsLWftZS6sK"
+        );
+        QB.init(QBAPP.appID, QBAPP.authKey, QBAPP.authSecret);
+    </script>
 
-#LinkedInButton{
-    background-color:#396bbe;
-    padding-left:10px;
-}
+    <!-- phantom library, needed for XDK "legacy" container api calls -->
+    <script src="intelxdk.js"></script>
+    <!-- phantom library, needed for Cordova api calls -->
+    <script src="cordova.js"></script>
+    <!-- phantom library, needed for XDK "legacy" container CORS -->
+    <script src="xhr.js"></script>
     
-#YelpButton{    
-    opacity:0.85;
-    background-color:#396bbe;
-    padding-left:10px;
-}
+    <script>
+        var onDeviceReady=function(){                             // called when Cordova is ready
+           if( window.Cordova && navigator.splashscreen ) {     // Cordova API detected
+               $.ui.launch(); 
+               navigator.splashscreen.hide() ;                 // hide splash screen
+            }
+        } ;
+        document.addEventListener("deviceready", onDeviceReady, false) ;
+    </script>
     
-#PlanButton{
-    opacity:0.70;
-    background-color:#396bbe;
-    padding-left:10px;
-}
+    <script>   
+        $.ui.autoLaunch = false; 
+        $.ui.backButtonText = "Back";
     
-img {
-    max-width: 100%;
-    max-height: 100%;
-}
-    
-.hyperspan
-{
-    float:left;
-    width:100%;
-    height:100%;
-    left:0;
-    top:0;
-    right:0;
-    z-index:1;
-}
-
-</style>
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.5b1.js"></script>
-<script>
-    $(document).ready(function() {
-        $.getScript("http://platform.linkedin.com/in.js?async=true", function success() {
-            IN.init({
-                api_key: "75hjzncfoiujqs",
-                authorize: true
+        $(document).ready(function(){
+            $.ui.launch();
+            
+            // setup signin and signup button events
+            $("#login").on("click", function(){
+                signIn();
+            });
+            
+            $("#register").on("click", function(){
+                signUp();
             });
         });
-    });
-    
-    function showLogoutButton() {
-        $("#linkedinLogout").css("visibility", "visible");
-    }
-    
-    function logoutAndHideLogoutButton() {
-        IN.User.logout();
-        $("#linkedinLogout").css("visibility", "hidden");
-    }
-</script>
+                
+        function signIn(){
+            
+            // sigin code here
+            
+            $.ui.loadContent("main", null, null, "fade");
+        }
+                
+        function signUp(){
+        
+            // signup code here
+            
+            $.ui.loadContent("main", null, null, "fade");
+        }   
+                
+        function startApp(){
+            // clears all back button history
+            $.ui.clearHistory();  
+            
+            // your app code here
+        }
+    </script>   
+    <script>
+        
+        function logout() {
+            Parse.User.logOut();
+            window.location = "index.html";
+            //$( "#content" ).load( "login.html" );
+            //IN.User.logout();
+        }
+        
+        function onLinkedInLoad() {
+            //IN.User.logout();
+            Parse.User.logOut();
+            IN.User.authorize(function(){
+                IN.API.Profile("me")
+                   .fields("firstName", "lastName", "headline", "emailAddress")
+                   .result(function(result) {
+                        res = newLinkedInUser(result.values[0]);})
+                    
+                
+                console.log("FUCKED");
+                
+                //$( "#content" ).load( "splash.html" );
+                
+            });
+           
+        }
+        
+        function newLinkedInUser(linkedInData) {
+            
+            var password = 123456789012345678901234;
+            var strpass = window.btoa(password.toString());
+            var username = linkedInData["emailAddress"];
+            
+            var currentUser = Parse.User.current();
+            if (currentUser) {
+                // do stuff with the user
+                console.log("Current User");
+                var params = {login: username, password: strpass};
+                var authparams = {login: 'cs130Intel', password: 'cs130IntelGroup'};
+              QB.createSession(authparams, function(err, result) {
+              // callback function
+                    QB.login(authparams, function(err, result) {
+                                      // callback function
+                                        console.log(err);
+                                      console.log("Complete LOGIN");
+                                    });
+                  console.log(err);
+            });
+                console.log("WORKS");
+                window.location = "main.html";
+            } 
+            else {
+                // login if accnt already created; else create account (qb, linkedin)
+                Parse.User.logIn(username,strpass, {
+                  success: function(user) {
+                    // Do stuff after successful login.
+                      console.log("LOG IN");
+                    //Login qb then redirect to homepage
+                      var params = {login: username, password: strpass};
+                      QB.createSession(params, function(err, result) {
+                      // callback function
+                          console.log(err);
+                          console.log("WORKS");
+                          window.location = "main.html";
+                    });
+                  },
+                  error: function(user, error) {
+                    // The login failed. Create account
+                      console.log("Create account"+username+strpass);
+                    var user = new Parse.User();
+                    user.set("username", username);
+                    user.set("password", strpass);
+                    user.set("email", linkedInData["emailAddress"]);
+                    user.set("firstName",linkedInData["firstName"]);
+                    user.set("lastName",linkedInData["lastName"]);
+                    var params = {login: username, password: strpass,
+                                 full_name: linkedInData["firstName"]+' '+linkedInData["lastName"]};
+                    var authparams = {login: 'cs130Intel', password: 'cs130IntelGroup'};
+                    user.signUp(null, {
+                      success: function(user) {
+                          var qbid;
+                          //Sign up the user in Quickblox ()
+                          QB.createSession(authparams,function(err, result) {
+                              // callback function
+                                QB.users.create(params, function(err, result) {
+                                  // callback function
+                                    console.log("Create QB");
+                                    console.log(err);
+                                    console.log(result);
+                                    qbid = result["id"];
+                                    var qblink = Parse.Object.extend("QBLink");
+                                    var qb = new qblink();
+                                    qb.set("user_id", user.id);
+                                    qb.set("qb_id", qbid);
+                                    qb.save();
+                                });
+                            });
+                          //Update Parse with the QB user Object Id
+                         // login parse, login qb
+                          Parse.User.logIn(username,strpass, {
+                              success: function(user) {
+                                // Do stuff after successful login.
+                                //Login qb then redirect to homepage
+                                  QB.login(authparams, function(err, result) {
+                                      // callback function
+                                        
+                                      console.log("Complete LOGIN");
+                                    });
+                              },
+                              error: function(user, error) {
+                                  alert("LIError: " + error.code + " " + error.message);
+                              }
+                            });
+                          
+                          console.log("WORKS");
+                          window.location = "main.html";
+                      },
+                      error: function(user, error) {
+                        // Show the error message somewhere and let the user try again.
+                        alert("SIError: " + error.code + " " + error.message);
+                      }
+                    });
+                        
+                  }
+                });
+            }
+        }
+        
+        
+    </script>
+    <style type="text/css">
+        * { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); -ms-touch-action:none;}
+
+
+        #container {
+            border-bottom: 3.5px dotted #87a0d3;
+            overflow:hidden;
+        }
+        #buttonClick{    
+            opacity:0.7;
+            display:table-cell;
+            text-align:center;
+            vertical-align:middle;
+            overflow:hidden; 
+            float:right;
+        }
+        #user_info{
+            border: 0px solid skyblue;
+        }
+        #thirdDiv{
+            display:inline-block;
+            float:left;    
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .hyperspan
+        {
+            float:right;
+            width:100%;
+            height:100%;
+            left:0;
+            top:0;
+            z-index:1;
+        }
+
+        .hyperspan1
+        {
+            float:right;
+            width:100%;
+            height:100%;
+            left:0;
+            top:0;
+            z-index:1;
+        }
+
+        </style>
 </head>
-<body style="height:75%; width:90%; margin:0; border: 10px solid white;">
-<div id="LinkedInButton" style="width:100%; height:15%; padding-top:7px; padding-bottom:7px;">
-    <a href="linkedin_map.html">
-        <span class="hyperspan"><img src="http://i.imgur.com/xngkSmd.jpg"></span>
-    </a>
-</div>
+<body> 
+<div id="afui">
     
-<div id="YelpButton" style="width:100%; height:15%; margin-top:12px; padding-top:7px; padding-bottom:7px;">
-    <a href="yelp_api_test.html">
-        <span class="hyperspan"><img src="http://i.imgur.com/SCfE94M.jpg"></span>
-    </a>
+    <div id="content" style=""> 
+       <!-- Views -->
+        <!-- Welcome View -->
+        <div class="panel" title="Welcome" id="page1" data-header="none" data-footer="none" selected="true">
+            <div style="text-align:center">
+            <br>
+            <br>
+            <h1>Welcome</h1>
+            <br>
+            <br>
+            <p>This is space for welcome message</p>
+            <br>
+            <br>
+            </div>    
+            <ul class="list inset">     
+                <li><a href="#signin" class="icon user" style="text-align:center">Login</a></li>
+                <!-- <li><a href="#signup" class="icon pencil" style="text-align:center">Register</a></li> -->
+                <li><a href="#" onclick="onLinkedInLoad()" class="icon user" style="text-align:center">Login with LinkedIn</a></li>
+                <li><a href="#" class="icon pencil" style="text-align:center">Register with LinkedIn</a></li>
+            </ul>
+        </div>
+        
+        <!-- Login View -->
+        <div class="panel" title="Login" id="signin" data-footer="none">
+            <div style="text-align:center">
+            <br>
+            <br>
+            <p>This is space for login message</p>
+            <br>
+            <br>
+            </div>
+            <input name="username" type="text" placeholder="username" />
+            <input name="password" type="password" placeholder="password" />
+            <a class="button block green" href="#" id="login">Login</a>
+        </div>
+        
+        <!-- Logged In View -->
+        <div class="panel" title="Login" id="loggedin" data-footer="none">
+            I AM HERE
+            
+        </div>
+        
+        <!-- Register View -->
+        <div class="panel" title="Register" id="signup" data-footer="none">
+            <div style="text-align:center">
+            <br>
+            <br>
+            <p>This is space for register message</p>
+            <br>
+            <br>
+            </div>
+            <input name="name" type="text" placeholder="Name" />
+            <input name="email" type="text" placeholder="Email" />
+            <input name="username" type="text" placeholder="username" />
+            <input name="password" type="password" placeholder="password" />
+            <input name="password2" type="password" placeholder="confirm password" />
+            <a class="button block green" href="#" id="register">Register</a>
+        </div>
+        
+        <!-- Main App View -->
+        <div class="panel" title="Start" id="main" data-load="startApp">
+            <p>This is App page after user has signed in...</p>
+        </div>
+    </div>
+
 </div>
-    
-<div id="PlanButton" style="width:100%; height:15%; margin-top:12px; padding-top:7px; padding-bottom:7px;">
-    <a href="yelp_api_test.html">
-        <span class="hyperspan"><img src="http://i.imgur.com/INqJ8tn.jpg"></span>
-    </a>
-</div>
-<input type="button" id="linkedinLogout" value="logout" onclick="logoutAndHideLogoutButton();" style="visibility:hidden;"/>
-<script type="IN/login" data-onAuth="showLogoutButton"></script>
 </body>
-</html>
+</html>    
