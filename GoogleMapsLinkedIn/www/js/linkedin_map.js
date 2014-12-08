@@ -64,6 +64,46 @@ function LinkedInUser1(linkedInUrl, p) {
     this.linkedInUrl = linkedInUrl;
 }
 
+function populateLocalUsers(results){
+    
+    for (var i = 0; i < results.length; i++) { 
+      var object = results[i];
+      var user = Parse.Object.extend("User");
+        var query = new Parse.Query(user);
+        query.equalTo("objectId", object.get('user_id'));
+        query.first({
+            success: function(user) {
+            // Successfully retrieved the object.
+            var pictureUrl = object.get('pictureUrl');
+                // Summary box for each searched user
+                var linkedinUserDivString = user.get('firstName') + ' ' + user.get('lastName') + '<br />'
+                                          + object.get('headline') + '<br />'
+                                          + object.get('location')["name"] + '<br />';
+
+                //Doesn't work for now (doesn't go into the first if statement
+                var linkedinUserImgDivString = "";
+                if (pictureUrl == "undefined"){
+                    linkedinUserImgDivString = '<img src="http://24sessions.com/img/profile_empty.jpg" />';
+                }
+                else{
+                    linkedinUserImgDivString = '<img src="' + pictureUrl + '" />';
+                }
+
+                linkedInResultStrings.push(linkedinUserDivString);
+                linkedInResultImgStrings.push(linkedinUserImgDivString);  
+            
+              },
+              error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+              }
+            });
+        
+    
+    
+     
+    }
+}
+
 function LinkedInUser(n, p) {
     /*
     this.lat = p.coords.latitude + n;
@@ -114,6 +154,19 @@ var suc = function(p) {
         ];
         console.log(users);
     
+        var event = Parse.Object.extend("QBLIData");
+            var query = new Parse.Query(event);
+            query.limit(10); 
+            query.equalTo("State", "CA");
+            query.find({
+              success: function(results) {
+                populateLocalUsers(results);
+              },
+              error: function(error) {
+                alert("Error: " + error.code + " " + error.message);
+              }
+            });
+    
         //Creates a new google maps marker object for using with the pins
         while (i < users.length) {
             //Create a new map marker
@@ -124,46 +177,6 @@ var suc = function(p) {
                 icon: 'http://i.imgur.com/NyckpY1.png'
             });
             
-            console.log("Getting Linkedin info for user " + i);
-            
-            
-            
-            /*IN.API.Profile("url=" + users[i].linkedInUrl)
-                .fields(["firstName", "lastName", "headline", "location", "pictureUrl"])
-                .result(function (result) {
-                    console.log(result);
-                    var res = result.values[0];
-                    var firstname = res["firstName"];
-                    var lastname = res["lastName"];
-                    var headline = res["headline"];
-                    var location = res["location"];
-                    var pictureUrl = res["pictureUrl"];
-                    console.log(i + " " + firstname + lastname + headline + location["name"] +
-                               pictureUrl)
-                    
-                    */
-                    // Summary box for each searched user
-                    var linkedinUserDivString = firstname + ' ' + lastname + '<br />'
-                                              + headline + '<br />'
-                                              + location["name"] + '<br />';
-                    
-                    //Doesn't work for now (doesn't go into the first if statement
-                    var linkedinUserImgDivString = "";
-                    if (pictureUrl == "undefined"){
-                        linkedinUserImgDivString = '<img src="http://24sessions.com/img/profile_empty.jpg" />';
-                    }
-                    else{
-                        linkedinUserImgDivString = '<img src="' + pictureUrl + '" />';
-                    }
-                    
-                    linkedInResultStrings.push(linkedinUserDivString);
-                    linkedInResultImgStrings.push(linkedinUserImgDivString);
-                    //console.log(linkedInResultStrings);
-                    //console.log(linkedInResultImgStrings);
-                })
-                .error(function (error) {
-                    console.log(error);
-                });
             
             google.maps.event.addListener(Marker, 'click', markerClickCallback(i));
             
