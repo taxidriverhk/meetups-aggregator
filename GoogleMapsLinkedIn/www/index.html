@@ -5,7 +5,7 @@
 <!--
     This template can be used for creating apps that require user login and user registration before starting actual app.
 --> 
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0;" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
     
     <link rel="stylesheet" type="text/css" href="appframework/af.ui.css" />
     <link rel="stylesheet" type="text/css" href="appframework/icons.css" />
@@ -37,6 +37,7 @@
                 "iYwv5mh6xC2ihhylRgMBc44ZSEXKJEsLWftZS6sK"
         );
         QB.init(QBAPP.appID, QBAPP.authKey, QBAPP.authSecret);
+       //Event.preventDefault();
     </script>
 
     <!-- phantom library, needed for XDK "legacy" container api calls -->
@@ -105,21 +106,60 @@
         
         function onLinkedInLoad() {
             //IN.User.logout();
-            Parse.User.logOut();
+            //Parse.User.logOut();
             IN.User.authorize(function(){
                 IN.API.Profile("me")
-                   .fields("firstName", "lastName", "headline", "emailAddress")
+                   .fields("firstName", "lastName", "headline", "emailAddress", "location",
+                          "pictureUrl")
                    .result(function(result) {
-                        res = newLinkedInUser(result.values[0]);})
-                    
-                
-                console.log("FUCKED");
-                
+                        newLinkedInUser(result.values[0]);})
+                                    
                 //$( "#content" ).load( "splash.html" );
                 
             });
            
         }
+        
+      function getlocation(user){
+
+          
+        var suc = function(p){
+            if (p.coords.latitude != undefined)
+            {
+                currentLatitude = p.coords.latitude;
+                currentLongitude = p.coords.longitude;
+                console.log("geolocation " + currentLatitude + " " + currentLongitude);
+                event = Parse.Object.extend("QBLIData");
+                var query = new Parse.Query(event);
+                //event.preventDefault();
+                query.equalTo("user_id", user.id);
+                
+                query.first({
+                  success: function(results) {
+                    console.log("found and updated");
+                    results.set("latitude",currentLatitude);
+                    results.set("longitude",currentLongitude);
+                    results.save();
+                      console.log("WORKS");
+                        window.location = "main.html";
+                  },
+                  error: function(error) {
+                    console.log("Error: " + error.code + " " + error.message);
+                  }
+                });
+
+                console.log("after it all...");
+            }
+        };
+
+        var fail = function(){ 
+            console.log("geolocation failed"); 
+            getLocation();
+        };
+
+        navigator.geolocation.getCurrentPosition(suc,fail);
+        
+    }
         
         function newLinkedInUser(linkedInData) {
             
@@ -142,8 +182,11 @@
                                     });
                   console.log(err);
             });
-                console.log("WORKS");
-                window.location = "main.html";
+                
+                //update geolocation
+                loc = getlocation(currentUser);
+                
+                
             } 
             else {
                 // login if accnt already created; else create account (qb, linkedin)
@@ -156,8 +199,11 @@
                       QB.createSession(params, function(err, result) {
                       // callback function
                           console.log(err);
-                          console.log("WORKS");
-                          window.location = "main.html";
+                          //user.preventDefault();
+                          //update geolocation
+                            loc = getlocation(user);
+                          
+                          
                     });
                   },
                   error: function(user, error) {
@@ -184,36 +230,43 @@
                                     console.log(err);
                                     console.log(result);
                                     qbid = result["id"];
-                                    var qblink = Parse.Object.extend("QBLink");
-                                    var qb = new qblink();
+                                    var qblidata = Parse.Object.extend("QBLIData");
+                                    var qb = new qblidata();
                                     qb.set("user_id", user.id);
                                     qb.set("qb_id", qbid);
+                                    qb.set("pictureUrl", linkedInData["pictureUrl"]);
+                                    qb.set("location", linkedInData["location"]);
+                                    qb.set("headline", linkedInData["headline"]);
                                     qb.save();
+                                    
+                                     Parse.User.logIn(username,strpass, {
+                                      success: function(user) {
+                                        // Do stuff after successful login.
+                                        //Login qb then redirect to homepage
+                                          QB.login(authparams, function(err, result) {
+                                              // callback function
+
+                                              console.log("Complete LOGIN");
+                                            });
+                                      },
+                                      error: function(user, error) {
+                                          console.log("LIError: " + error.code + " " + error.message);
+                                      }
+                                    });
+                          
+                                      //update geolocation
+                                    loc = getlocation(user);
                                 });
                             });
                           //Update Parse with the QB user Object Id
                          // login parse, login qb
-                          Parse.User.logIn(username,strpass, {
-                              success: function(user) {
-                                // Do stuff after successful login.
-                                //Login qb then redirect to homepage
-                                  QB.login(authparams, function(err, result) {
-                                      // callback function
-                                        
-                                      console.log("Complete LOGIN");
-                                    });
-                              },
-                              error: function(user, error) {
-                                  alert("LIError: " + error.code + " " + error.message);
-                              }
-                            });
                           
-                          console.log("WORKS");
-                          window.location = "main.html";
+                          //console.log("What the heck is going on?.....");
+
                       },
                       error: function(user, error) {
                         // Show the error message somewhere and let the user try again.
-                        alert("SIError: " + error.code + " " + error.message);
+                        console.log("SIError: " + error.code + " " + error.message);
                       }
                     });
                         
@@ -295,7 +348,7 @@
             <ul class="list inset">     
                 <li><a href="#signin" class="icon user" style="text-align:center">Login</a></li>
                 <!-- <li><a href="#signup" class="icon pencil" style="text-align:center">Register</a></li> -->
-                <li><a href="#" onclick="onLinkedInLoad()" class="icon user" style="text-align:center">Login with LinkedIn</a></li>
+                <li><a href="#" onclick="onLinkedInLoad() " class="icon user" style="text-align:center">Login with LinkedIn</a></li>
                 <li><a href="#" class="icon pencil" style="text-align:center">Register with LinkedIn</a></li>
             </ul>
         </div>

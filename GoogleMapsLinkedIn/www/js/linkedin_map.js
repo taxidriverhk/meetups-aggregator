@@ -128,7 +128,7 @@ var suc = function(p) {
             
             
             
-            IN.API.Profile("url=" + users[i].linkedInUrl)
+            /*IN.API.Profile("url=" + users[i].linkedInUrl)
                 .fields(["firstName", "lastName", "headline", "location", "pictureUrl"])
                 .result(function (result) {
                     console.log(result);
@@ -141,7 +141,7 @@ var suc = function(p) {
                     console.log(i + " " + firstname + lastname + headline + location["name"] +
                                pictureUrl)
                     
-                    
+                    */
                     // Summary box for each searched user
                     var linkedinUserDivString = firstname + ' ' + lastname + '<br />'
                                               + headline + '<br />'
