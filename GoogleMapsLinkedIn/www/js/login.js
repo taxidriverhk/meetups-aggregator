@@ -175,9 +175,9 @@ function logout() {
                   },
                   error: function(user, error) {
                     // The login failed. Create account
-                        createNewUser();
+                        var newuser = createNewUser(linkedInData);
                         //update geolocation
-                        loc = getlocation(user);
+                        loc = getlocation(newuser);
                       
                         
                   }
