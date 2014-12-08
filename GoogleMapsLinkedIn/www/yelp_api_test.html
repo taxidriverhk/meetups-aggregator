@@ -174,7 +174,8 @@
         // phone number
         if(biz.phone.length)
             text += formatPhoneNumber(biz.phone);
-
+        // Chat link
+        text += '<br/><a href="chat.html" class="chatlink" target="_blank">CHAT!</a><br/>';
         // div end
         text += '</div></div>'
         return text;
