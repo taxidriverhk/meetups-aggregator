@@ -16,7 +16,7 @@ var plan_users = [
     new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan"),
     new LinkedInUser1("https://www.linkedin.com/in/zacharyli323"),
     new LinkedInUser1("https://www.linkedin.com/in/zhengyusun"),
-    new LinkedInUser1("https://www.linkedin.com/in/shiha"),
+    new LinkedInUser1("https://www.linkedin.com/pub/kevin-wu/88/357/a60"),
 ];
 var planLinkedInUserStrings = new Array();
 
