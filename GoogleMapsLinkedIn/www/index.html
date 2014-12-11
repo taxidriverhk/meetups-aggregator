@@ -98,123 +98,48 @@
         }
     </script>   
 
-    <style type="text/css">
-        * { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); -ms-touch-action:none;}
 
-
-        #container {
-            border-bottom: 3.5px dotted #87a0d3;
-            overflow:hidden;
-        }
-        #buttonClick{    
-            opacity:0.7;
-            display:table-cell;
-            text-align:center;
-            vertical-align:middle;
-            overflow:hidden; 
-            float:right;
-        }
-        #user_info{
-            border: 0px solid skyblue;
-        }
-        #thirdDiv{
-            display:inline-block;
-            float:left;    
-        }
-
-        img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        .hyperspan
-        {
-            float:right;
-            width:100%;
-            height:100%;
-            left:0;
-            top:0;
-            z-index:1;
-        }
-
-        .hyperspan1
-        {
-            float:right;
-            width:100%;
-            height:100%;
-            left:0;
-            top:0;
-            z-index:1;
-        }
-
-        </style>
 </head>
 <body> 
 <div id="afui">
     
-    <div id="content" style=""> 
+    <div id="content"> 
        <!-- Views -->
         <!-- Welcome View -->
         <div class="panel" title="Welcome" id="page1" data-header="none" data-footer="none" selected="true">
-            <div style="text-align:center">
+            <div style="text-align:center;">
             <br>
             <br>
-            <h1>Welcome</h1>
             <br>
             <br>
-            <p>This is space for welcome message</p>
             <br>
             <br>
+            <br>
+            <br>
+            <h1><font size="12">Welcome</font></h1>
+            <br>
+
+            <p><i><font size="4">Intel XDK Aggregator Mash-Up</font></i></p>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
             </div>    
             <ul class="list inset">     
-                <li><a href="#signin" class="icon user" style="text-align:center">Login</a></li>
-                <!-- <li><a href="#signup" class="icon pencil" style="text-align:center">Register</a></li> -->
-                <li><a href="#" onclick="UserLogin() " class="icon user" style="text-align:center">Login with LinkedIn</a></li>
-                <li><a href="#" class="icon pencil" style="text-align:center">Register with LinkedIn</a></li>
+                <li><a href="#" onclick="UserLogin() " class="icon user" style="text-align:center;">Login with LinkedIn</a></li>
             </ul>
         </div>
-        
-        <!-- Login View -->
-        <div class="panel" title="Login" id="signin" data-footer="none">
-            <div style="text-align:center">
-            <br>
-            <br>
-            <p>This is space for login message</p>
-            <br>
-            <br>
-            </div>
-            <input name="username" type="text" placeholder="username" />
-            <input name="password" type="password" placeholder="password" />
-            <a class="button block green" href="#" id="login">Login</a>
-        </div>
-        
-        <!-- Logged In View -->
-        <div class="panel" title="Login" id="loggedin" data-footer="none">
-            I AM HERE
-            
-        </div>
-        
-        <!-- Register View -->
-        <div class="panel" title="Register" id="signup" data-footer="none">
-            <div style="text-align:center">
-            <br>
-            <br>
-            <p>This is space for register message</p>
-            <br>
-            <br>
-            </div>
-            <input name="name" type="text" placeholder="Name" />
-            <input name="email" type="text" placeholder="Email" />
-            <input name="username" type="text" placeholder="username" />
-            <input name="password" type="password" placeholder="password" />
-            <input name="password2" type="password" placeholder="confirm password" />
-            <a class="button block green" href="#" id="register">Register</a>
-        </div>
-        
-        <!-- Main App View -->
-        <div class="panel" title="Start" id="main" data-load="startApp">
-            <p>This is App page after user has signed in...</p>
-        </div>
+
     </div>
 
 </div>
