@@ -58,8 +58,6 @@
     var points = [];
     var businesses = [];
     var userLatLng = new GLatLng(37.7458, -122.4416);
-        
-    document.getElementById("goChatButton").onclick = function(){ console.log("Moving onto user chat."); };
 
     /*
      * Creates the map object and calls setCenterAndBounds
@@ -83,6 +81,8 @@
         icon.shadowSize = new GSize(38, 29);
         icon.iconAnchor = new GPoint(15, 29);
         icon.infoWindowAnchor = new GPoint(15, 3);
+             
+        document.getElementById("goChatButton").onclick = function(){ console.log("Yelp GoChatButton clicked."); };
     }
 
     /*
