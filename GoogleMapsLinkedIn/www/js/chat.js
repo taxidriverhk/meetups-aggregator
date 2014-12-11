@@ -197,8 +197,10 @@ function showMessage(body, time, extension) {
 	var html, url, selector = $('.chat .messages');
 	
 	html = '<section class="message">';
-
-	html += '<header><b>' + jd?user1:user2 + '</b>';
+	var name;
+	if(extension.nick == "user2") name = user2;
+	else name = user1;
+	html += '<header><b>' + name + '</b>';
 	html += '<time datetime="' + time + '">' + $.timeago(time) + '</time></header>';
 	html += '<div class="message-description">' + QBChatHelpers.parser(body) + '</div>';
 	
@@ -241,7 +243,7 @@ function onConnectSuccess() {
 	console.log('user1 should be: '+user1);
 	console.log('user2 should be: '+user2);
 
-	$('.panel-title .opponent').text(user2);
+	$('.panel-title .opponent').text(!jd?user1:user2);
 	$('.chat .chat-user-list').html('<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> ' + opponent + '</li>');
 	$('.chat .messages').empty();
 	if(jd){
@@ -274,7 +276,7 @@ function onChatMessage(senderID, message) {
 function onChatState(senderID, message) {
 	switch (message.state) {
 	case 'composing':
-		$('.chat .messages').append('<div class="typing-message">' + message.extension.nick + ' ...</div>');
+		$('.chat .messages').append('<div class="typing-message">' + /*message.extension.nick +*/ ' ...</div>');
 		$('.chat .messages').scrollTo('*:last', 0);
 		break;
 	case 'paused':
