@@ -51,8 +51,15 @@
 
     var map = null;
     var icon = null;
+    var marker = null;
     var firstLoad = true;
+    var numRestaurants = 0;
+    var geocoder = null;
+    var points = [];
+    var businesses = [];
     var userLatLng = new GLatLng(37.7458, -122.4416);
+        
+    document.getElementById("goChatButton").onclick = function(){ console.log("Moving onto user chat."); };
 
     /*
      * Creates the map object and calls setCenterAndBounds
@@ -60,11 +67,11 @@
      */
     function load() {
         map = new GMap2(document.getElementById("map"));
+        geocoder = new GClientGeocoder();
         GEvent.addListener(map, "load", function() {updateMap();});
-        var zoomAmt = 13;
+        var zoomAmt = 11;
         var mapCenter = new GLatLng(37.7458, -122.4416);
         map.setCenter(mapCenter, zoomAmt);
-        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
                 
         if (window.attachEvent) window.attachEvent("onresize", function() { map.checkResize()} );
         else if (window.addEventListener) window.addEventListener("resize", function() { map.checkResize()}, false);
@@ -122,6 +129,17 @@
      * If a sucessful API response is received, place
      * markers on the map.  If not, display an error.
      */
+        
+    function findLatLng(biz, address){
+        geocoder.getLatLng(address, function (point) {
+            if (!point) {
+                //do nothing
+            } else {
+                createMarker(biz, point);
+            }
+        });
+    }
+
     function handleResults(data) {
         if(data.message.text == "OK") {
             if (data.businesses.length == 0) {
@@ -132,12 +150,11 @@
             //instead of data.businesses.length, use 5
             for(var i=0; i < 5; i++) {
                 biz = data.businesses[i];
-                var neg = Math.floor((Math.random()) + 1);
-                if(neg == 0) 
-                    neg = -1;
-                var restaurantLat = userLatLng.lat() + (Math.random() * 0.04) * neg;
-                var restaurantLong = userLatLng.lng() + (Math.random() * 0.05) * neg;
-                createMarker(biz, new GLatLng(restaurantLat, restaurantLong), i);
+                businesses.push(biz);
+
+                var address = biz.address1 + ', ' + biz.city + ', ' + biz.state + " " + biz.zip;
+
+                findLatLng(biz, address);
             }
         }
         else {
@@ -240,7 +257,7 @@
             </form>
         </div>
         <div id="buttonClick" style="width:50px; height:50px; display:inline-block; text-align:center; display:table-cell; padding-top:4.5px; margin-right:9px;">
-            <a href="chat.html">
+            <a id="goChatButton" href="chat.html">
                 <span class="hyperspan"><img src="http://i.imgur.com/A2xUkCy.jpg"></span>
             </a>
         </div>
