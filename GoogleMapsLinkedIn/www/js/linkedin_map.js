@@ -51,11 +51,36 @@ var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 var selectedUser;
 if(ParseUsers.length == 0){
     var makeAPICall = function () {
-        var promise = populateLocalUsers();
-        promise.then(function(res) {
-            //console.log(ParseUsers[0]["url"]);
-            console.log("What happens after that API Call");
-        });
+        populateLocalUsers();
+        window.setTimeout(function(){
+            for(var i = 0; i < ParseUsers.length; i++) {
+                var userUrl = ParseUsers[i]["url"];
+                console.log("calling profile API for user " + userUrl);
+                IN.API.Profile("url=" + userUrl)
+                .fields(["firstName", "lastName", "headline", "location", "industry", "picture-url", "public-profile-url"])
+                .result(function (result) {
+                    console.log(result);
+                    // Summary box for each searched user
+                    var linkedinUserDivString = result.values[0]["firstName"] + ' ' + result.values[0]["lastName"] + '<br />'
+                                              + result.values[0]["headline"] + '<br />'
+                                              + result.values[0]["location"]["name"] + '<br />';
+
+                    //Doesn't work for now (doesn't go into the first if statement
+                    if (result.values[0]["pictureUrl"] == "undefined "){
+                        var linkedinUserImgDivString = '<img src="http://24sessions.com/img/profile_empty.jpg" />';
+                    }
+                    else{
+                        var linkedinUserImgDivString = '<img src="' + result.values[0]["pictureUrl"] + '" />';
+                    }
+
+                    linkedInResultStrings.push(linkedinUserDivString);
+                    linkedInResultImgStrings.push(linkedinUserImgDivString);
+                })
+                .error(function (error) {
+                    console.log(error);
+                });
+            }
+        }, 6000);
     }
     makeAPICall();
 }
@@ -68,6 +93,7 @@ function drawMap() {
     
     var latlng = new google.maps.LatLng(currentLatitude, currentLongitude);
     myLatLng = latlng;
+    console.log("map drawn centered at " + currentLatitude + " " + currentLongitude);
     var mapOptions = {
         center: latlng,
         zoom: 12,
@@ -83,8 +109,8 @@ function drawMap() {
     }
 }
 //40.7655,-73.97204 = NYC
-var currentLatitude = "40.713768";
-var currentLongitude = "-73.016696";
+var currentLatitude = parseFloat("37.7458");
+var currentLongitude = parseFloat("-122.4416");
 var options = {
     timeout: 10000,
     maximumAge: 11000,
@@ -105,8 +131,8 @@ function LinkedInUser1(linkedInUrl, p) {
     var neg = Math.floor((Math.random()) + 1);
     if(neg == 0) 
         neg = -1;
-    this.lat = currentLatitude + (Math.random() * 0.0225) * neg;
-    this.long = currentLongitude + (Math.random() * 0.0225) * neg;
+    this.lat = currentLatitude + (Math.random() * 0.0725) * neg;
+    this.long = currentLongitude + (Math.random() * 0.0725) * neg;
     this.linkedInUrl = linkedInUrl;
 }
 
@@ -163,22 +189,30 @@ var i = 0;
 var suc = function(p) {
         console.log("geolocation success", 4);
     
-        user = new LinkedInUser("https://www.linkedin.com/in/zhengyusun", p);
+        console.log(p);
+        user = new LinkedInUser("https://www.linkedin.com/in/zhengyusun", p);  
+        var users = [
+            new LinkedInUser1("https://www.linkedin.com/pub/andrew-kuang/57/241/a93", p),
+            new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan", p),
+            new LinkedInUser1("https://www.linkedin.com/in/zacharyli323", p),
+            new LinkedInUser1("https://www.linkedin.com/in/zhengyusun", p),
+            new LinkedInUser1("https://www.linkedin.com/in/shiha", p),
+        ];
     
         //Draws the map initially
+        /*
+        currentLatitude = p.coords.latitude;
+        currentLongitude = p.coords.longitude;
+        */
+
+        /* LA - WESTWOOD latlng
+        currentLatitude = 34.056;
+        currentLongitude = -118.44;
+        */
+
+        currentLatitude = 37.7458;
+        currentLongitude = -122.4416;
         if (_map === null) {
-            /*
-            currentLatitude = p.coords.latitude;
-            currentLongitude = p.coords.longitude;
-            */
-            
-            /* LA - WESTWOOD latlng
-            currentLatitude = 34.056;
-            currentLongitude = -118.44;
-            */
-            
-            currentLatitude = 37.7458;
-            currentLongitude = -122.4416;
             drawMap();
         } else {
             myLatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
@@ -223,9 +257,11 @@ var suc = function(p) {
         };
     
         //Creates a new google maps marker object for using with the pins
-        while (i < users.length) {
+        while (i < users.length && i < ParseUsers.length) {
             //Create a new map marker
+            console.log("adding Google Maps marker");
             userLatLng = new google.maps.LatLng(users[i].lat, users[i].long);
+            console.log(userLatLng);
             var Marker = new google.maps.Marker({
                 position: userLatLng,
                 map: _map,
