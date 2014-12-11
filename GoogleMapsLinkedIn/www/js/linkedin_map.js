@@ -19,8 +19,10 @@ $.getScript('http://www.parsecdn.com/js/parse-1.3.1.min.js', function()
         hc["GCxntFDnDg"] = {url: "http://linkedin.com/", qbid: "2063551"};
         
         console.log("before setting connections" + currentUser.id);
-
-        currentUser.set("connections") = window.JSON.parse(hc); 
+        console.log(hc);
+        var po = new Parse.Object();
+        po = hc;
+        currentUser.set("connections") = po.toJSON(); 
         eser.save(null, {
           success: function(gameScore) {
             // Execute any logic that should take place after the object is saved.
@@ -98,7 +100,7 @@ function LinkedInUser1(linkedInUrl, p) {
     this.linkedInUrl = linkedInUrl;
 }
 
-function populateLocalUsers(results){
+function populateLocalUsers(){
         
      //grab list of users close to currentUser
         //for now we will simply grab everyone
@@ -147,9 +149,11 @@ var suc = function(p) {
             myLatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
         }
     
-        // Hard-coded user results from the search
-        
-        
+        // grabs users into users array
+        $.when( populateLocalUsers() ).done(function() {
+           
+            //inside here, users array is populated...
+        });
     
         
         console.log(users);
