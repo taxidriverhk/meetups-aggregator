@@ -167,7 +167,16 @@ var suc = function(p) {
               }
             });
     
-        document.getElementById("goYelpButton").onclick = function(){ console.log("GO button has been clicked"); };
+        document.getElementById("goYelpButton").onclick = function(){ 
+            
+            
+            
+            console.log("GO button has been clicked"); 
+            
+            
+        
+        
+        };
     
         //Creates a new google maps marker object for using with the pins
         while (i < users.length) {
@@ -221,6 +230,11 @@ function setText() {
 
 function onDeviceReady() {
     try {
+        var connects = new Object();
+        connects = grabConnections;
+        $.when(connects()).done(function(retval){
+            console.log(retval);
+        });
         if (device.platform.indexOf("Android") != -1) {
             //intel.xdk.display.useViewport(480, 480);
             document.getElementById("map_canvas").style.width = "480px";

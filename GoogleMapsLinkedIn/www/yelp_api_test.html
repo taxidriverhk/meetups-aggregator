@@ -55,10 +55,12 @@
     var firstLoad = true;
     var numRestaurants = 0;
     var geocoder = null;
+    //var chosenRestaurantName = null;
+    //var chosenRestaurantURL = null;
     var points = [];
     var businesses = [];
     var userLatLng = new GLatLng(37.7458, -122.4416);
-
+        
     /*
      * Creates the map object and calls setCenterAndBounds
      * to instantiate it.
@@ -81,8 +83,12 @@
         icon.shadowSize = new GSize(38, 29);
         icon.iconAnchor = new GPoint(15, 29);
         icon.infoWindowAnchor = new GPoint(15, 3);
-             
-        document.getElementById("goChatButton").onclick = function(){ console.log("Yelp GoChatButton clicked."); };
+        
+        document.getElementById("goChatButton").onclick = function(){ 
+            console.log("Moving onto user chat."); 
+            //console.log("Chosen Restaurant: " + chosenRestaurantName + "");
+            //console.log("URL: " + chosenRestaurantURL + "");
+        };
     }
 
     /*
@@ -241,6 +247,8 @@
         map.addOverlay(marker);
         GEvent.addListener(marker, "click", function() {
             marker.openInfoWindowHtml(infoWindowHtml, {maxWidth:300});
+            //chosenRestaurantName = biz.name;
+            //chosenRestaurantURL = biz.url;
         });
 
     }
