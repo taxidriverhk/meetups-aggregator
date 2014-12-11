@@ -39,6 +39,7 @@ var _seconds = 5;
 var _llbounds = null;
 var user = null;
 var users = new Array();
+var ParseUsers = new Array();
 var linkedInResultStrings = new Array();
 var linkedInResultImgStrings = new Array();
 var myLatLng;
@@ -48,6 +49,17 @@ var boolTripTrack = true;
 var curProfileImage = "http://24sessions.com/img/profile_empty.jpg";
 var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
 var selectedUser;
+if(ParseUsers.length == 0){
+    var makeAPICall = function () {
+        var promise = populateLocalUsers();
+        promise.then(function(res) {
+            //console.log(ParseUsers[0]["url"]);
+            console.log("What happens after that API Call");
+        });
+    }
+    makeAPICall();
+}
+
 //Create the google Maps and LatLng object 
 
 function drawMap() {
@@ -99,30 +111,35 @@ function LinkedInUser1(linkedInUrl, p) {
 }
 
 function populateLocalUsers(){
-        
-     //grab list of users close to currentUser
-        //for now we will simply grab everyone
-    //returns a list of [{id,url,qbid}] and stores it to var users
-    event = Parse.Object.extend("User");
-    var query = new Parse.Query(event);
-    //event.preventDefault();
-    query.greaterThan("url", ""); //random 
+    var deferred = $.Deferred();
+    var func = function() {
+         //grab list of users close to currentUser
+            //for now we will simply grab everyone
+        //returns a list of [{id,url,qbid}] and stores it to var users
+        event = Parse.Object.extend("User");
+        var query = new Parse.Query(event);
+        //event.preventDefault();
+        query.greaterThan("url", ""); //random 
 
-    query.find({
-      success: function(results) {
-        console.log("populateusers");
-        for (var i = 0; i < results.length; i++) { 
-          var object = results[i].attributes;
-          //console.log(object);
-            console.log(one);
-            var one = {username: object["username"], url: object["url"], qbid: object["qbid"]};
-            users[users.length] = one;
-        }
-      },
-      error: function(error) {
-        console.log("Error: " + error.code + " " + error.message);
-      }
-    })
+        query.find({
+          success: function(results) {
+            console.log("populateusers");
+            for (var i = 0; i < results.length; i++) { 
+              var object = results[i].attributes;
+              //console.log(object);
+                //console.log(one);
+                var one = {username: object["username"], url: object["url"], qbid: object["qbid"]};
+                ParseUsers[ParseUsers.length] = one;
+            }
+          },
+          error: function(error) {
+            console.log("Error: " + error.code + " " + error.message);
+          }
+        }).done(function() {
+            return deferred.resolve(ParseUsers); 
+        });
+    }
+    func();
 }
 
 function LinkedInUser(n, p) {
@@ -166,15 +183,7 @@ var suc = function(p) {
         } else {
             myLatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
         }
-    
-        // grabs users into users array
-        $.when( populateLocalUsers() ).done(function() {
-           
-            //inside here, users array is populated...
-        });
-    
         
-        console.log(users);
     
         document.getElementById("goYelpButton").onclick = function(){ 
             console.log("GO button has been clicked"); 
@@ -195,14 +204,14 @@ var suc = function(p) {
             }).done(function() {
                //check to see if current user is in connections list
                 //if so, update info, and move to next view.
-                var select = pData[(users[selectedUser]["username"])];
+                var select = pData[(ParseUsers[selectedUser]["username"])];
                 if( select !== undefined) {
-                    select["url"] = users[selectedUser]["url"];
+                    select["url"] = ParseUsers[selectedUser]["url"];
                 }
                 //else add user in and move to next view
                 else {
-                    pData[users[selectedUser]["username"]] = {url: users[selectedUser]["username"],
-                                                        qbid: users[selectedUser]["qbid"]};
+                    pData[ParseUsers[selectedUser]["username"]] = {url: ParseUsers[selectedUser]["username"],
+                                                        qbid: ParseUsers[selectedUser]["qbid"]};
                 }
                 //update parse
                 //currentUser.set("connections") = pData;
@@ -265,12 +274,9 @@ function setText() {
 }
 
 function onDeviceReady() {
-    try {
-        var connects = new Object();
-        connects = grabConnections;
-        $.when(connects()).done(function(retval){
-            console.log(retval);
-        });
+    try {        
+        
+        
         if (device.platform.indexOf("Android") != -1) {
             //intel.xdk.display.useViewport(480, 480);
             document.getElementById("map_canvas").style.width = "480px";

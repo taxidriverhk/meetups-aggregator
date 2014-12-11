@@ -15,6 +15,8 @@ var plan_users = [
     new LinkedInUser1("https://www.linkedin.com/pub/andrew-kuang/57/241/a93"),
     new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan"),
     new LinkedInUser1("https://www.linkedin.com/in/zacharyli323"),
+    new LinkedInUser1("https://www.linkedin.com/in/zhengyusun"),
+    new LinkedInUser1("https://www.linkedin.com/in/shiha"),
 ];
 var planLinkedInUserStrings = new Array();
 
@@ -33,10 +35,8 @@ function onDeviceReadyPlan() {
     
     window.setTimeout(function(){
         for(var j = 0; j < plan_users.length; j++) {
-            var elementString = "#user" + (j+1) + "Button";
-            $(elementString).css("visibility", "visible");
-            elementString += " span";
-            $(elementString).html("<i>" + planLinkedInUserStrings[j] + "</i>");
+            var elementString = "#user" + (j+1) + "Button span";
+            $(elementString).html(planLinkedInUserStrings[j]);
         }
     }, 1500);
 }
