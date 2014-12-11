@@ -167,16 +167,7 @@ var suc = function(p) {
               }
             });
     
-        document.getElementById("goYelpButton").onclick = function(){ 
-            
-            
-            
-            console.log("GO button has been clicked"); 
-            
-            
-        
-        
-        };
+        document.getElementById("goYelpButton").onclick = function(){ console.log("GO button has been clicked"); };
     
         //Creates a new google maps marker object for using with the pins
         while (i < users.length) {
