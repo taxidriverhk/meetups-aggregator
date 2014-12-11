@@ -67,14 +67,14 @@ function LinkedInUser1(linkedInUrl, p) {
 function populateLocalUsers(results){
     
     for (var i = 0; i < results.length; i++) { 
-      var object = results[i];
-      var user = Parse.Object.extend("User");
+        var object = results[i];
+        var user = Parse.Object.extend("User");
         var query = new Parse.Query(user);
         query.equalTo("objectId", object.get('user_id'));
         query.first({
             success: function(user) {
-            // Successfully retrieved the object.
-            var pictureUrl = object.get('pictureUrl');
+                // Successfully retrieved the object.
+                var pictureUrl = object.get('pictureUrl');
                 // Summary box for each searched user
                 var linkedinUserDivString = user.get('firstName') + ' ' + user.get('lastName') + '<br />'
                                           + object.get('headline') + '<br />'
@@ -166,6 +166,8 @@ var suc = function(p) {
                 alert("Error: " + error.code + " " + error.message);
               }
             });
+    
+        document.getElementById("goYelpButton").onclick = function(){ console.log("GO button has been clicked"); };
     
         //Creates a new google maps marker object for using with the pins
         while (i < users.length) {
