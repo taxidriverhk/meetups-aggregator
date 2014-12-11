@@ -232,13 +232,9 @@ function onDeviceReady() {
     try {
         var connects = new Object();
         connects = grabConnections;
-        $.when( connects() ).done(function(objs) {
-         
-            console.log();
-            
+        $.when(connects()).done(function(retval){
+            console.log(retval);
         });
-            
-            console.log(connects);
         if (device.platform.indexOf("Android") != -1) {
             //intel.xdk.display.useViewport(480, 480);
             document.getElementById("map_canvas").style.width = "480px";

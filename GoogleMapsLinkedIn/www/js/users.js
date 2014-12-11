@@ -102,7 +102,8 @@ function UserLogin() {
         };
         
         $.when( login() ).done(function() {
-         
+                
+                window.location = "main.html";
                 return true;
             
         });
@@ -112,7 +113,7 @@ function UserLogin() {
         IN.User.authorize(function(){
                 IN.API.Profile("me")
                    .fields("firstName", "lastName", "headline", "emailAddress", "location",
-                          "pictureUrl")
+                          "pictureUrl","url")
                    .result(function(result) {
                         var username = "";
                         if(result.values[0]["emailAddress"] !== undefined) {
@@ -163,24 +164,12 @@ function getlocation(user){
             currentLatitude = p.coords.latitude;
             currentLongitude = p.coords.longitude;
             console.log("geolocation " + currentLatitude + " " + currentLongitude);
-            event = Parse.Object.extend("QBLIData");
-            var query = new Parse.Query(event);
-            //event.preventDefault();
-            query.equalTo("user_id", user.id);
-
-            query.first({
-              success: function(results) {
-                console.log("found and updated");
-                results.set("latitude",currentLatitude);
-                results.set("longitude",currentLongitude);
-                results.save();
-                  console.log("WORKS");
-                    window.location = "main.html";
-              },
-              error: function(error) {
-                console.log("Error: " + error.code + " " + error.message);
-              }
-            });
+            var point = new Parse.GeoPoint(currentLatitude, currentLongitude);
+            user.set("location",point);
+            user.save();
+            
+            console.log("WORKS");
+            
 
             console.log("after it all...");
         }
@@ -220,14 +209,9 @@ function createNewUser(linkedInData){
                         console.log(err);
                         console.log(result);
                         qbid = result["id"];
-                        var qblidata = Parse.Object.extend("QBLIData");
-                        var qb = new qblidata();
-                        qb.set("user_id", user.id);
-                        qb.set("qb_id", qbid);
-                        qb.set("pictureUrl", linkedInData["pictureUrl"]);
-                        qb.set("location", linkedInData["location"]);
-                        qb.set("headline", linkedInData["headline"]);
-                        qb.save();
+
+                        user.set("qbid", qbid);
+                        user.save();
 
                          Parse.User.logIn(username,strpass, {
                           success: function(user) {
