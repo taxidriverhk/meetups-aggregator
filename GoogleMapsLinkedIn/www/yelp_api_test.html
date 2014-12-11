@@ -8,7 +8,8 @@
         body {margin:0;padding:0;overflow: hidden;position:fixed}
         #map, #mapContainer {width:100%; height: 100%; padding-top:55px}
         #top {position:absolute; left:0; width: 100%; height: 20%; background-color: #ffffff; opacity: 0.7;}
-        #searchbox {line-height: 10px; margin: 15px;  text-align: center; vertical-align: middle;}
+        #searchbox {line-height: 10px; margin: 15px;  text-align: center;}
+        #buttonClick{opacity:0.7;display:table-cell;text-align:center;vertical-align:middle;overflow:hidden;float:right;}
         .marker {font-size: 11px;}
         .marker .businessimage { float: left;}
         .marker .ratingsimage {vertical-align:middle; margin-top:0px;}
@@ -174,8 +175,7 @@
         // phone number
         if(biz.phone.length)
             text += formatPhoneNumber(biz.phone);
-        // Chat link
-        text += '<br/><a href="chat.html" class="chatlink" target="_blank">CHAT!</a><br/>';
+
         // div end
         text += '</div></div>'
         return text;
@@ -233,11 +233,16 @@
   </head>
   <body onload="load()" onunload="GUnload()" style="postiion:fixed; overflow:hidden; width:100%; height:100%">
     <div id="top">
-        <div style="padding-top:10.5px";>
-            <form action="#" onsubmit="return updateMap();" id="search" align="center">
+        <div style="padding-top:10.5px; padding-left:9px;  display:inline-block;">
+            <form action="#" onsubmit="return updateMap();" id="search">
                 <input style="font-style: italic" type="text" id="term" name="term" placeholder="Search ..." required />
                 <span class="error" id="errorMessage" />
             </form>
+        </div>
+        <div id="buttonClick" style="width:50px; height:50px; display:inline-block; text-align:center; display:table-cell; padding-top:4.5px; margin-right:9px;">
+            <a href="chat.html" class="chatlink" target="_blank">
+                <span class="hyperspan"><img src="http://i.imgur.com/A2xUkCy.jpg"></span>
+            </a>
         </div>
     </div>
     <div id="mapContainer" align="bottom"><div id="map" style="border-top: 3.5px dotted #87a0d3" align="bottom"></div></div>
