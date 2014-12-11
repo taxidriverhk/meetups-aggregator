@@ -1,5 +1,15 @@
 var params, chatUser, chatService, recipientID;
 
+
+var jd = true;
+console.log(self.location.search);
+var user1 = self.location.search.split('=')[1].split('?')[0].replace(/%20/g, " ");
+console.log(user1);
+var user2 = self.location.search.split('user2=')[1].split('?')[0].replace(/%20/g, " ");
+console.log(user2);
+var rest = self.location.search.split('=')[3].replace(/%20/g, " ");
+console.log(rest);
+
 // Storage QB user ids by their logins
 var users = {
 	user1: '1762566',
@@ -25,7 +35,8 @@ $(document).ready(function() {
 			updateTime();
 			
 			// events
-			$('#loginForm button').click(login);
+			//$('#loginForm button').click(login);
+			login(user1);
 			$('#logout').click(logout);
 			$('.attach').on('click', '.close', closeFile);
 			$('.chat input:text').keydown(startTyping);
@@ -38,14 +49,24 @@ $(document).ready(function() {
 	};
 });
 
-function login() {
+function login(un) {
 	$('#loginForm button').hide();
 	$('#loginForm .progress').show();
-	
-	params = {
-		login: $(this).val(),
-		password: 'testtest' // default password
-	};
+	if(rest != "blah"){
+		console.log("hey u1");
+		params = {
+			login: 'user1',
+			password: 'testtest' // default password
+		};
+	}
+	else{
+		console.log("hey u2");
+		params = {
+			login: 'user2',
+			password: 'testtest' // default password
+		};
+		jd = false;
+	}
 	
 	// chat user authentication
 	QB.login(params, function(err, result) {
@@ -176,7 +197,8 @@ function showMessage(body, time, extension) {
 	var html, url, selector = $('.chat .messages');
 	
 	html = '<section class="message">';
-	html += '<header><b>' + extension.nick + '</b>';
+
+	html += '<header><b>' + jd?user1:user2 + '</b>';
 	html += '<time datetime="' + time + '">' + $.timeago(time) + '</time></header>';
 	html += '<div class="message-description">' + QBChatHelpers.parser(body) + '</div>';
 	
@@ -215,9 +237,17 @@ function onConnectSuccess() {
 	console.log(chatUser.login);
 	$('#loginForm').modal('hide');
 	$('#wrap').show();
-	$('.panel-title .opponent').text(opponent);
+	console.log("jd is "+jd);
+	console.log('user1 should be: '+user1);
+	console.log('user2 should be: '+user2);
+
+	$('.panel-title .opponent').text(user2);
 	$('.chat .chat-user-list').html('<li class="list-group-item"><span class="glyphicon glyphicon-user"></span> ' + opponent + '</li>');
 	$('.chat .messages').empty();
+	if(jd){
+		var text = 'Hi '+user2+' I want to invite you to '+rest;
+		sendMessage(text);
+	}
 	$('.chat input:text').focus().val('');
 	changeHeightChatBlock();
 	

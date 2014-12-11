@@ -85,6 +85,21 @@ if(ParseUsers.length == 0){
     makeAPICall();
 }
 
+var currentUser;
+var targetUser;
+var clickElement;
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    console.log()
+    clickElement = document.getElementsByClassName('gggg')[0];
+});
+// happen only when yelp button is click
+function yelpEvent(){
+
+    console.log(clickElement.href);
+}
+
+
 //Create the google Maps and LatLng object 
 
 function drawMap() {
@@ -179,6 +194,24 @@ function LinkedInUser(n, p) {
     this.info = null;
 }
 
+// find your own data
+function getProfileData() {
+    IN.API.Profile("me")
+        .fields(["firstName", "lastName", "headline", "summary"])
+        .result(function(result) {
+        setCurrentUser(result);
+    });
+}
+function setCurrentUser(userResult){
+    currentUser = userResult.values[0];
+    console.log(currentUser['firstName']+' '+currentUser['lastName']);
+    var name = currentUser['firstName']+' '+currentUser['lastName'];
+    clickElement.href+='?user1=';
+    clickElement.href+= name;
+    clickElement.href+='?user2=tempUser';
+
+}
+
 $(".buttonClick").click(function(){
      window.location=$(this).find("a").attr("href"); 
      return false;
@@ -188,7 +221,7 @@ var i = 0;
 //Success callback
 var suc = function(p) {
         console.log("geolocation success", 4);
-    
+        getProfileData();
         console.log(p);
         user = new LinkedInUser("https://www.linkedin.com/in/zhengyusun", p);  
         var users = [
@@ -197,6 +230,7 @@ var suc = function(p) {
             new LinkedInUser1("https://www.linkedin.com/in/zacharyli323", p),
             new LinkedInUser1("https://www.linkedin.com/in/zhengyusun", p),
             new LinkedInUser1("https://www.linkedin.com/in/shiha", p),
+            new LinkedInUser1("https://www.linkedin.com/pub/kevin-wu/88/357/a60", p)
         ];
     
         //Draws the map initially
@@ -298,6 +332,13 @@ function markerClickCallback(id) {
         selectedUser = id;
         document.getElementById("user_info").innerHTML = linkedInResultStrings[id];
         document.getElementById("thirdDiv").innerHTML = linkedInResultImgStrings[id];
+        targetUser = linkedInResultStrings[id].split("<br />")[0];
+        //console.log('target chat person is '+targetUser);
+        
+        clickElement.href = clickElement.href.split("?user2=")[0] + '?user2=' + targetUser;
+
+        console.log(clickElement.href);
+
     };
 }
 

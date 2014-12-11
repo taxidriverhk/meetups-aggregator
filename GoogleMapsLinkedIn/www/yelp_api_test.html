@@ -68,6 +68,19 @@
     var businesses = [];
     var userLatLng = new GLatLng(37.7458, -122.4416);
         
+
+    // qb merge
+
+    console.log("first");
+
+    // store info pass from linkedinPage
+    //console.log(self.location.search);
+    var user1 = self.location.search.split('=')[1].split('?')[0].replace(/%20/g, " ");
+    console.log(user1 + "in yelp page");
+    var user2 = self.location.search.split('=')[2].split('?')[0].replace(/%20/g, " ");;
+    console.log(user2 + "in yelp page");
+    var currentRes;
+
     /*
      * Creates the map object and calls setCenterAndBounds
      * to instantiate it.
@@ -206,8 +219,13 @@
         if(biz.phone.length)
             text += formatPhoneNumber(biz.phone);
 
+        currentRes = biz.name;
+
+        // Chat link
+        text += '<br/><a href="chat.html?user1='+user1+'?user2='+user2+'?rest='+biz.name+'" class="chatlink" target="_blank">CHAT!</a><br/>';
+
         // div end
-        text += '</div></div>'
+        text += '</div></div>';
         return text;
     }
 
