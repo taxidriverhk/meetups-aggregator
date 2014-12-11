@@ -1,11 +1,44 @@
 /*jslint sloppy:true, browser:true, devel:true, white:true, vars:true, eqeq:true, nomen:true, unparam:true */
 /*global intel, google, Marker, device */
 
+//var currentUser;
+$.getScript('http://www.parsecdn.com/js/parse-1.3.1.min.js', function()
+{
+    // script is now loaded and executed.
+    // put your dependent JS here.
+    Parse.initialize(
+            "8kgtDniBqpMIqR431enDHnkKQO1joSenElOwTjsG",
+            "iYwv5mh6xC2ihhylRgMBc44ZSEXKJEsLWftZS6sK"
+    )
+    
+}).then(function() {
+        var currentUser = Parse.User.current();
+        var hc = new Object();
+        hc["0oElRsLagv"] = {url: "http://google.com/", qbid: "2063479"};
+        hc["JE5BA2czuk"] = {url: "http://reddit.com/", qbid: "2063383"};
+        hc["GCxntFDnDg"] = {url: "http://linkedin.com/", qbid: "2063551"};
+        
+        console.log("before setting connections" + currentUser.id);
+
+        currentUser.set("connections") = window.JSON.parse(hc); 
+        eser.save(null, {
+          success: function(gameScore) {
+            // Execute any logic that should take place after the object is saved.
+            console.log("dude win");
+          },
+          error: function(gameScore, error) {
+            // Execute any logic that should take place if the save fails.
+            // error is a Parse.Error with an error code and message.
+            console.log(error);
+          }
+        });
+    });
+
 var _map = null;
 var _seconds = 5;
 var _llbounds = null;
 var user = null;
-var users;
+var users = new Array();
 var linkedInResultStrings = new Array();
 var linkedInResultImgStrings = new Array();
 var myLatLng;
@@ -14,6 +47,7 @@ var oldLatLng = "";
 var boolTripTrack = true;
 var curProfileImage = "http://24sessions.com/img/profile_empty.jpg";
 var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+var selectedUser;
 //Create the google Maps and LatLng object 
 
 function drawMap() {
@@ -65,43 +99,10 @@ function LinkedInUser1(linkedInUrl, p) {
 }
 
 function populateLocalUsers(results){
-    
-    for (var i = 0; i < results.length; i++) { 
-        var object = results[i];
-        var user = Parse.Object.extend("User");
-        var query = new Parse.Query(user);
-        query.equalTo("objectId", object.get('user_id'));
-        query.first({
-            success: function(user) {
-                // Successfully retrieved the object.
-                var pictureUrl = object.get('pictureUrl');
-                // Summary box for each searched user
-                var linkedinUserDivString = user.get('firstName') + ' ' + user.get('lastName') + '<br />'
-                                          + object.get('headline') + '<br />'
-                                          + object.get('location')["name"] + '<br />';
-
-                //Doesn't work for now (doesn't go into the first if statement
-                var linkedinUserImgDivString = "";
-                if (pictureUrl == "undefined"){
-                    linkedinUserImgDivString = '<img src="http://24sessions.com/img/profile_empty.jpg" />';
-                }
-                else{
-                    linkedinUserImgDivString = '<img src="' + pictureUrl + '" />';
-                }
-
-                linkedInResultStrings.push(linkedinUserDivString);
-                linkedInResultImgStrings.push(linkedinUserImgDivString);  
-            
-              },
-              error: function(error) {
-                alert("Error: " + error.code + " " + error.message);
-              }
-            });
         
-    
-    
-     
-    }
+     //grab list of users close to currentUser
+        //for now we will simply grab everyone
+    //returns a list of [{id,url,qbid}] and stores it to var users
 }
 
 function LinkedInUser(n, p) {
@@ -147,27 +148,47 @@ var suc = function(p) {
         }
     
         // Hard-coded user results from the search
-        users = [
-            new LinkedInUser1("https://www.linkedin.com/pub/andrew-kuang/57/241/a93", p),
-            new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan", p),
-            new LinkedInUser1("https://www.linkedin.com/in/zacharyli323", p)
-        ];
+        
+        
+    
+        
         console.log(users);
     
-        var event = Parse.Object.extend("QBLIData");
-            var query = new Parse.Query(event);
-            query.limit(10); 
-            query.equalTo("State", "CA");
-            query.find({
-              success: function(results) {
-                populateLocalUsers(results);
+        document.getElementById("goYelpButton").onclick = function(){ 
+            console.log("GO button has been clicked"); 
+            
+            var pData = new Array();
+            var query = new Parse.Query(Parse.User);
+            
+            query.equalTo("objectId", currentUser.id);
+            query.first({
+              success: function(object) {
+                //console.log("");
+                console.log(object);
+                  pData = object.attributes["connections"];
               },
               error: function(error) {
-                alert("Error: " + error.code + " " + error.message);
+                console.log("Error: " + error.code + " " + error.message);
               }
+            }).done(function() {
+               //check to see if current user is in connections list
+                //if so, update info, and move to next view.
+                var select = pData[(users[selectedUser]["id"])];
+                if( select !== undefined) {
+                    select["url"] = users[selectedUser]["url"];
+                }
+                //else add user in and move to next view
+                else {
+                    pData[users[selectedUser]["id"]] = {url: users[selectedUser]["id"],
+                                                        qbid: users[selectedUser]["qbid"]};
+                }
+                //update parse
+                currentUser.set("connections") = pData;
+                currentUser.save().then(function() {
+                    //move to different view 
+                });
             });
-    
-        document.getElementById("goYelpButton").onclick = function(){ console.log("GO button has been clicked"); };
+        };
     
         //Creates a new google maps marker object for using with the pins
         while (i < users.length) {
@@ -206,6 +227,7 @@ var getLocation = function() {
 
 function markerClickCallback(id) {
     return function() {
+        selectedUser = id;
         document.getElementById("user_info").innerHTML = linkedInResultStrings[id];
         document.getElementById("thirdDiv").innerHTML = linkedInResultImgStrings[id];
     };

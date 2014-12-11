@@ -194,6 +194,7 @@ function createNewUser(linkedInData){
         user.set("email", linkedInData["emailAddress"]);
         user.set("firstName",linkedInData["firstName"]);
         user.set("lastName",linkedInData["lastName"]);
+        user.set("url",linkedInData["url"]);
         var params = {login: username, password: strpass,
                      full_name: linkedInData["firstName"]+' '+linkedInData["lastName"]};
         var authparams = {login: 'cs130Intel', password: 'cs130IntelGroup'};
