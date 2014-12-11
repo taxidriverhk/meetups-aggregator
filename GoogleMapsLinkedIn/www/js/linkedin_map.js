@@ -13,17 +13,15 @@ $.getScript('http://www.parsecdn.com/js/parse-1.3.1.min.js', function()
     
 }).then(function() {
         var currentUser = Parse.User.current();
-        var hc = new Object();
-        hc["0oElRsLagv"] = {url: "http://google.com/", qbid: "2063479"};
-        hc["JE5BA2czuk"] = {url: "http://reddit.com/", qbid: "2063383"};
-        hc["GCxntFDnDg"] = {url: "http://linkedin.com/", qbid: "2063551"};
+        /*var hc = new Object();
+        hc["andrewfkuang@ucla.edu"] = {url: "http://google.com/", qbid: "2063479"};
+        hc["AndrewKuang@example.com"] = {url: "http://reddit.com/", qbid: "2063383"};
+        hc["solarflaregx@gmail.com"] = {url: "http://linkedin.com/", qbid: "2063551"};
         
         console.log("before setting connections" + currentUser.id);
-        console.log(hc);
-        var po = new Parse.Object();
-        po = hc;
-        currentUser.set("connections") = po.toJSON(); 
-        eser.save(null, {
+        console.log(JSON.stringify(hc));
+        //currentUser.put("connections", ); 
+        currentUser.save({connections: JSON.stringify(hc)}, {
           success: function(gameScore) {
             // Execute any logic that should take place after the object is saved.
             console.log("dude win");
@@ -33,7 +31,7 @@ $.getScript('http://www.parsecdn.com/js/parse-1.3.1.min.js', function()
             // error is a Parse.Error with an error code and message.
             console.log(error);
           }
-        });
+        });*/
     });
 
 var _map = null;
@@ -105,6 +103,26 @@ function populateLocalUsers(){
      //grab list of users close to currentUser
         //for now we will simply grab everyone
     //returns a list of [{id,url,qbid}] and stores it to var users
+    event = Parse.Object.extend("User");
+    var query = new Parse.Query(event);
+    //event.preventDefault();
+    query.greaterThan("url", ""); //random 
+
+    query.find({
+      success: function(results) {
+        console.log("populateusers");
+        for (var i = 0; i < results.length; i++) { 
+          var object = results[i].attributes;
+          //console.log(object);
+            console.log(one);
+            var one = {username: object["username"], url: object["url"], qbid: object["qbid"]};
+            users[users.length] = one;
+        }
+      },
+      error: function(error) {
+        console.log("Error: " + error.code + " " + error.message);
+      }
+    })
 }
 
 function LinkedInUser(n, p) {
@@ -177,19 +195,20 @@ var suc = function(p) {
             }).done(function() {
                //check to see if current user is in connections list
                 //if so, update info, and move to next view.
-                var select = pData[(users[selectedUser]["id"])];
+                var select = pData[(users[selectedUser]["username"])];
                 if( select !== undefined) {
                     select["url"] = users[selectedUser]["url"];
                 }
                 //else add user in and move to next view
                 else {
-                    pData[users[selectedUser]["id"]] = {url: users[selectedUser]["id"],
+                    pData[users[selectedUser]["username"]] = {url: users[selectedUser]["username"],
                                                         qbid: users[selectedUser]["qbid"]};
                 }
                 //update parse
-                currentUser.set("connections") = pData;
-                currentUser.save().then(function() {
+                //currentUser.set("connections") = pData;
+                currentUser.save({connections: pData}).then(function() {
                     //move to different view 
+                    console.log("moved to diff view");
                 });
             });
         };
