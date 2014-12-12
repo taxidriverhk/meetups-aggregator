@@ -90,7 +90,11 @@
         geocoder = new GClientGeocoder();
         GEvent.addListener(map, "load", function() {updateMap();});
         var zoomAmt = 11;
-        var mapCenter = new GLatLng(37.7458, -122.4416);
+        // SF Lat, Long
+        //var mapCenter = new GLatLng(37.7458, -122.4416);
+        // LA
+        var mapCenter = new GLatLng(34.056,-118.44);
+        
         map.setCenter(mapCenter, zoomAmt);
                 
         if (window.attachEvent) window.attachEvent("onresize", function() { map.checkResize()} );

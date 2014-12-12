@@ -124,8 +124,9 @@ function drawMap() {
     }
 }
 //40.7655,-73.97204 = NYC
-var currentLatitude = parseFloat("37.7458");
-var currentLongitude = parseFloat("-122.4416");
+
+var currentLatitude = parseFloat("34.054");
+var currentLongitude = parseFloat("-118.46");
 var options = {
     timeout: 10000,
     maximumAge: 11000,
@@ -146,8 +147,8 @@ function LinkedInUser1(linkedInUrl, p) {
     var neg = Math.floor((Math.random()) + 1);
     if(neg == 0) 
         neg = -1;
-    this.lat = currentLatitude + (Math.random() * 0.0725) * neg;
-    this.long = currentLongitude + (Math.random() * 0.0725) * neg;
+    this.lat = currentLatitude + (Math.random() * 0.0225) * neg;
+    this.long = currentLongitude + (Math.random() * 0.0225) * neg;
     this.linkedInUrl = linkedInUrl;
 }
 
@@ -239,13 +240,13 @@ var suc = function(p) {
         currentLongitude = p.coords.longitude;
         */
 
-        /* LA - WESTWOOD latlng
-        currentLatitude = 34.056;
-        currentLongitude = -118.44;
-        */
-
+        /* LA - WESTWOOD latlng*/
+        currentLatitude = 34.054;
+        currentLongitude = -118.46;
+        
+        /* SF 
         currentLatitude = 37.7458;
-        currentLongitude = -122.4416;
+        currentLongitude = -122.4416;*/
         if (_map === null) {
             drawMap();
         } else {
