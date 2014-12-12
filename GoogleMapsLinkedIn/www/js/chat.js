@@ -276,7 +276,7 @@ function onChatMessage(senderID, message) {
 function onChatState(senderID, message) {
 	switch (message.state) {
 	case 'composing':
-		$('.chat .messages').append('<div class="typing-message">' + /*message.extension.nick +*/ ' ...</div>');
+		//$('.chat .messages').append('<div class="typing-message">' + /*message.extension.nick +*/ ' ...</div>');
 		$('.chat .messages').scrollTo('*:last', 0);
 		break;
 	case 'paused':

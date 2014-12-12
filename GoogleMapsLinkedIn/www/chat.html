@@ -6,14 +6,11 @@
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 	<link rel="stylesheet" href="./css/styles.css">
 </head>
-<body>
+<body style="overflow:hidden; width:100%; height:100%;">
 	<section id="wrap">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title">Chat with <span class="opponent"></span></h3>
-				<button type="button" id="logout" class="btn tooltip-title" data-toggle="tooltip" data-placement="bottom" title="Exit">
-					<span class="glyphicon glyphicon-log-out"></span>
-				</button>
 			</div>
 			<div class="chat panel-body">
 				<ul class="chat-user-list list-group"></ul>
@@ -45,8 +42,8 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h3 class="modal-title">One to One chat<br>
-					</h3>
+					<h6 class="modal-title"><i>Loading chatroom ...</i><br>
+					</h6>
 				</div>
 				<div class="modal-body">
 					<button type="button" value="user1" class="btn btn-primary btn-lg btn-block">Sign in with user1</button>

@@ -15,8 +15,7 @@ var plan_users = [
     new LinkedInUser1("https://www.linkedin.com/pub/andrew-kuang/57/241/a93"),
     new LinkedInUser1("https://www.linkedin.com/in/ryanwmchan"),
     new LinkedInUser1("https://www.linkedin.com/in/zacharyli323"),
-    new LinkedInUser1("https://www.linkedin.com/in/zhengyusun"),
-    new LinkedInUser1("https://www.linkedin.com/pub/kevin-wu/88/357/a60"),
+    new LinkedInUser1("https://hk.linkedin.com/pub/alex-leung/82/690/835")
 ];
 var planLinkedInUserStrings = new Array();
 
@@ -35,13 +34,26 @@ function onDeviceReadyPlan() {
     
     window.setTimeout(function(){
         for(var j = 0; j < plan_users.length; j++) {
-            var elementString = "#user" + (j+1) + "Button span";
-            $(elementString).html(planLinkedInUserStrings[j]);
+            var fetchString = "#fetching_users";
+            $(fetchString).css("height", "0");
+            $(fetchString).css("visibility", "hidden");
+            $(fetchString).css("padding-top", "0");
+            var elementString = "#user" + (j+1) + "Button";
+            $(elementString).css("visibility", "visible");
+            $(elementString).css("height", "20%");
+            var str = "chat.html?user1="+planLinkedInUserStrings[j] +"?user2=Kevin Wu?rest=blah";
+            $(elementString+" a").attr("href", str);
+            
+            
+            elementString += " span";
+            $(elementString).html("<i>" + planLinkedInUserStrings[j] + "</i>");
+
+            //$(elementString).href("chat.html?user1="+planLinkedInUserStrings[j]+"?user2=Kevin Wu?rest=blah");
         }
     }, 1500);
 }
 
-
+/*
 $("#user1Button").click(function(){
      window.location=$(this).find("a").attr("href"); 
      return false;
@@ -65,7 +77,7 @@ $("#user4Button").click(function(){
 $("#user5Button").click(function(){
      window.location=$(this).find("a").attr("href"); 
      return false;
-});
+});*/
 
 //document.addEventListener("deviceready", onDeviceReadyPlan, false);
 window.scrollX = 0;
